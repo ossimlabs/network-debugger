@@ -37,7 +37,7 @@ node("${BUILD_NODE}"){
                         usernameVariable: 'DOCKER_REGISTRY_USERNAME',
                         passwordVariable: 'DOCKER_REGISTRY_PASSWORD']])
         {
-            withDockerRegistry(credentialsId: 'dockerCredentials', url: "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
+            withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
                 sh """
                   docker build -t ${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}/network-debugger .
                   docker push ${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}/network-debugger

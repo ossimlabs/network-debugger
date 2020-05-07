@@ -6,4 +6,4 @@ RUN yum install -y wget bind-utils iputils nc nmap net-tools iproute tcpdump ope
     && yum clean all
 RUN adduser centos
 USER centos
-CMD cat
+CMD ["tail",  "-f", "/dev/null"]

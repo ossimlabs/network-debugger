@@ -1,7 +1,8 @@
 properties([
     parameters ([
         string(name: 'BUILD_NODE', defaultValue: 'omar-build', description: 'The build node to run on'),
-        booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run')
+        booleanParam(name: 'CLEAN_WORKSPACE', defaultValue: true, description: 'Clean the workspace at the end of the run'),
+        string(name: 'DOCKER_REGISTRY_DOWNLOAD_URL', defaultValue: 'nexus-docker-private-group.ossim.io', description: 'Repository of docker images')
     ]),
     pipelineTriggers([
             [$class: "GitHubPushTrigger"]
@@ -18,6 +19,12 @@ podTemplate(
       ttyEnabled: true,
       command: 'cat',
       privileged: true
+    ),
+    containerTemplate(
+      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/curlimages/curl:7.70.0",
+      name: 'curl',
+      command: 'cat',
+      ttyEnabled: true
     ),
     containerTemplate(
       image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/alpine/helm:3.2.3",
@@ -83,7 +90,7 @@ node(POD_LABEL){
   }
 
   stage('Upload chart'){
-    container('builder') {
+    container('curl') {
       withCredentials([usernameColonPassword(credentialsId: 'helmCredentials', variable: 'HELM_CREDENTIALS')]) {
         sh "curl -u ${HELM_CREDENTIALS} ${HELM_UPLOAD_URL} --upload-file packaged-chart/*.tgz -v"
       }

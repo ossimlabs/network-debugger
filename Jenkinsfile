@@ -10,8 +10,25 @@ properties([
     buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '3', daysToKeepStr: '', numToKeepStr: '20')),
     disableConcurrentBuilds()
 ])
-
-node("${BUILD_NODE}"){
+podTemplate(
+  containers: [
+    containerTemplate(
+      name: 'docker',
+      image: 'docker:latest',
+      ttyEnabled: true,
+      command: 'cat',
+      privileged: true
+    )
+  ],
+  volumes: [
+    hostPathVolume(
+      hostPath: '/var/run/docker.sock',
+      mountPath: '/var/run/docker.sock'
+    ),
+  ]
+)
+{
+node(POD_LABEL){
 
     stage("Checkout branch $BRANCH_NAME")
     {
@@ -30,20 +47,23 @@ node("${BUILD_NODE}"){
         load "common-variables.groovy"
     }
 
-    stage ("Publish Docker App")
-    {
-        withCredentials([[$class: 'UsernamePasswordMultiBinding',
-                        credentialsId: 'dockerCredentials',
-                        usernameVariable: 'DOCKER_REGISTRY_USERNAME',
-                        passwordVariable: 'DOCKER_REGISTRY_PASSWORD']])
-        {
-            withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
-                sh """
-                  docker build -t ${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}/network-debugger .
-                  docker push ${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}/network-debugger
-                """
-            }
+    stage('Docker build') {
+      container('docker') {
+        withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {  //TODO
+          sh """
+            docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-docs-app:${BRANCH_NAME} .
+          """
         }
+      }
+      stage('Docker push'){
+        container('docker') {
+          withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}") {
+          sh """
+              docker push "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-docs-app:${BRANCH_NAME}
+          """
+          }
+        }
+      }
     }
 
    stage("Clean Workspace")
@@ -51,4 +71,5 @@ node("${BUILD_NODE}"){
       if ("${CLEAN_WORKSPACE}" == "true")
         step([$class: 'WsCleanup'])
    }
+}
 }

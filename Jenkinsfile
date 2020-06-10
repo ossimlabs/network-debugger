@@ -21,7 +21,7 @@ podTemplate(
       privileged: true
     ),
     containerTemplate(
-      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/curlimages/curl:7.70.0",
+      image: "${DOCKER_REGISTRY_DOWNLOAD_URL}/centos:8",
       name: 'curl',
       command: 'cat',
       ttyEnabled: true

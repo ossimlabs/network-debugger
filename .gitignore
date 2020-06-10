@@ -1,0 +1,3 @@
+packaged-chart
+*.lock
+charts/*.tgz

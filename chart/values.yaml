@@ -1,0 +1,44 @@
+# Default values for network-debugger.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicas: 1
+
+appName: network-debugger
+
+global:
+  dockerRepository: nexus-docker-private-group.ossim.io
+  imagePullSecret:
+    registry: null
+    username: null
+    password: null
+  
+  createImagePullSecret: true
+  useImagePullSecret: true
+
+# These variables can be overridden because of the use of the 'pluck' function:
+# - createIngress
+# - useTls
+# - useTlsClientAuth
+# - createImagePullSecret
+# - createHpa
+# - createPVs
+# - useSpringConfigServer
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 800Mi
+  requests:
+    cpu: 5m
+    memory: 500Mi
+    
+image:
+  name: network-debugger
+  tag: latest
+  pullPolicy: Always
+
+internalPort: 8080
+externalPort: 8080
+
+terminationGracePeriodSeconds: 30

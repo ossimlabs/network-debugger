@@ -72,3 +72,4 @@ node("${BUILD_NODE}"){
         step([$class: 'WsCleanup'])
    }
 }
+}

@@ -28,7 +28,7 @@ podTemplate(
   ]
 )
 {
-node("${BUILD_NODE}"){
+node(POD_LABEL){
 
     stage("Checkout branch $BRANCH_NAME")
     {
@@ -51,7 +51,7 @@ node("${BUILD_NODE}"){
       container('docker') {
         withDockerRegistry(credentialsId: 'dockerCredentials', url: "https://${DOCKER_REGISTRY_DOWNLOAD_URL}") {  //TODO
           sh """
-            docker build -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-docs-app:${BRANCH_NAME} ./docker
+            docker build --network=host -t "${DOCKER_REGISTRY_PUBLIC_UPLOAD_URL}"/omar-docs-app:${BRANCH_NAME} .
           """
         }
       }

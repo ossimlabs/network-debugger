@@ -8,4 +8,4 @@ RUN adduser centos
 USER centos
 RUN pip3 install --user awscli
 WORKDIR /home/centos
-CMD ["tail",  "-f", "/dev/null"]
+ENTRYPOINT ["bash"]

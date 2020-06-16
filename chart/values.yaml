@@ -38,6 +38,8 @@ image:
   tag: latest
   pullPolicy: Always
 
+dockerImageTag: 19.03.11
+
 internalPort: 8080
 externalPort: 8080
 

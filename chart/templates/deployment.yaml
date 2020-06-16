@@ -30,6 +30,8 @@ spec:
             memory: {{ .Values.resources.requests.memory }}
         terminationMessagePath: /dev/termination-log
       - name: docker
+        command: ["sh"]
+        args: ["-c", "while true; do sleep 10; done"]
         env:
         image: "{{ .Values.global.dockerRepository }}/docker:{{ .Values.dockerImageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}

@@ -36,6 +36,9 @@ spec:
         image: "{{ .Values.global.dockerRepository }}/docker:{{ .Values.dockerImageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         terminationMessagePath: /dev/termination-log
+        volumeMounts:
+          - mountPath: /var/run/docker.sock
+          name: docker-sock
       dnsPolicy: ClusterFirst
       {{- if .Values.global.useImagePullSecret }}
       imagePullSecrets:
@@ -44,3 +47,7 @@ spec:
       restartPolicy: Always
       securityContext: {}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      - hostPath:
+          path: /var/run/docker.sock
+          type: ""
+        name: docker-sock

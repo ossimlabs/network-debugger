@@ -47,7 +47,8 @@ spec:
       restartPolicy: Always
       securityContext: {}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      - hostPath:
-          path: /var/run/docker.sock
-          type: ""
-        name: docker-sock
+      volumes:
+        - hostPath:
+            path: /var/run/docker.sock
+            type: ""
+          name: docker-sock

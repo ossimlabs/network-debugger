@@ -38,9 +38,14 @@ image:
   tag: latest
   pullPolicy: Always
 
-dockerImageTag: 19.03.11
-
 internalPort: 8080
 externalPort: 8080
 
 terminationGracePeriodSeconds: 30
+
+docker:
+  enabled: false
+  image:
+    name: docker
+    tag: 19.03.11
+    pullPolicy: IfNotPresent

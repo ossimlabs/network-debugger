@@ -29,16 +29,18 @@ spec:
             cpu: {{ .Values.resources.requests.cpu }}
             memory: {{ .Values.resources.requests.memory }}
         terminationMessagePath: /dev/termination-log
+      {{- if .Values.docker.enabled }}
       - name: docker
         command: ["sh"]
         args: ["-c", "while true; do sleep 10; done"]
         env:
-        image: "{{ .Values.global.dockerRepository }}/docker:{{ .Values.dockerImageTag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: "{{ .Values.global.dockerRepository }}/{{ .Values.docker.image.name }}:{{ .Values.docker.image.tag }}"
+        imagePullPolicy: {{ .Values.docker.image.pullPolicy }}
         terminationMessagePath: /dev/termination-log
         volumeMounts:
           - mountPath: /var/run/docker.sock
             name: docker-sock
+      {{- end }}
       dnsPolicy: ClusterFirst
       {{- if .Values.global.useImagePullSecret }}
       imagePullSecrets:

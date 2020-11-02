@@ -49,3 +49,13 @@ docker:
     name: docker
     tag: 19.03.11
     pullPolicy: IfNotPresent
+
+configmaps: {}
+
+extraVolumes: []
+
+extraVolumeMounts: []
+
+extraInitContainers: []
+
+sideCars: []

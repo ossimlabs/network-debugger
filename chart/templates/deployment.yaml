@@ -13,7 +13,13 @@ spec:
       labels:
         app: {{ .Values.appName }}
     spec:
+      {{- if .Values.extraInitContainers }}
+      {{- toYaml .Values.extraInitContainers | nindent 6 }}
+      {{- end }}
       containers:
+      {{- if .Values.sideCars }}
+      {{- toYaml .Values.sideCars | nindent 6 }}
+      {{- end }}
       - name: debugger
         command: ["bash"]
         args: ["-c", "while true; do sleep 10; done"]
